@@ -1,7 +1,7 @@
 import { AlertTriangle, RotateCw } from "lucide-react";
 import { Button } from "./Button";
 
-export function ErrorState({ title = "Something went wrong", message, onRetry }) {
+export function ErrorState({ title = "Something went wrong", message, onRetry, action }) {
   return (
     <div role="alert" className="flex flex-col items-center rounded-lg border border-border bg-surface px-6 py-14 text-center">
       <span
@@ -18,6 +18,7 @@ export function ErrorState({ title = "Something went wrong", message, onRetry })
           Retry
         </Button>
       )}
+      {action && <div className="mt-5">{action}</div>}
     </div>
   );
 }
