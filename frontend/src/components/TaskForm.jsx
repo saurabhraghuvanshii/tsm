@@ -6,6 +6,7 @@ import { PRIORITY_LABELS, STATUS_LABELS } from "@/utils/format";
 import { validateTask } from "@/utils/validate";
 import { Button } from "./Button";
 import { Field, controlClasses } from "./Field";
+import { Select } from "./Select";
 
 const EMPTY_TASK = { title: "", description: "", status: "pending", priority: "medium", dueDate: "" };
 
@@ -88,18 +89,18 @@ export function TaskForm({ initialValues, submitLabel, onSubmit, cancelHref = "/
 
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Status" error={errors.status}>
-            <select {...fieldProps("status")} className={`${controlClasses} h-10`}>
+            <Select {...fieldProps("status")}>
               {Object.entries(STATUS_LABELS).map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
               ))}
-            </select>
+            </Select>
           </Field>
           <Field label="Priority" error={errors.priority}>
-            <select {...fieldProps("priority")} className={`${controlClasses} h-10`}>
+            <Select {...fieldProps("priority")}>
               {Object.entries(PRIORITY_LABELS).map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
               ))}
-            </select>
+            </Select>
           </Field>
         </div>
 

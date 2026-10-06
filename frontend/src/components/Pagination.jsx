@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./Button";
-import { controlClasses } from "./Field";
+import { Select } from "./Select";
 
 export function Pagination({ meta, pageSizes, onPageChange, onLimitChange }) {
   if (!meta || (meta.totalPages <= 1 && meta.total <= pageSizes[0])) return null;
@@ -15,11 +15,11 @@ export function Pagination({ meta, pageSizes, onPageChange, onLimitChange }) {
         <label className="flex items-center gap-2 text-sm text-muted">
           <span className="hidden sm:inline">Per page</span>
           <span className="sr-only sm:hidden">Tasks per page</span>
-          <select value={limit} onChange={(event) => onLimitChange(Number(event.target.value))} className={`${controlClasses} h-10 w-auto pr-8`}>
+          <Select value={limit} onChange={(event) => onLimitChange(Number(event.target.value))} className="w-20">
             {pageSizes.map((size) => (
               <option key={size} value={size}>{size}</option>
             ))}
-          </select>
+          </Select>
         </label>
         <Button onClick={() => onPageChange(page - 1)} disabled={page <= 1} aria-label="Previous page">
           <ChevronLeft className="h-4 w-4" aria-hidden="true" />

@@ -101,7 +101,6 @@ export function TaskDetailView() {
           <MetaItem label="Created">{formatDateTime(task.createdAt)}</MetaItem>
           <MetaItem label="Last updated">{formatDateTime(task.updatedAt)}</MetaItem>
         </dl>
-        <p className="break-all border-t border-border px-5 py-3 font-mono text-xs text-muted sm:px-6">ID: {task.id}</p>
       </article>
 
       <ConfirmDialog

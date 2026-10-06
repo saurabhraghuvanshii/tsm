@@ -1,24 +1,23 @@
 "use client";
 
-import { Search, X } from "lucide-react";
+import { ArrowUpDown, CircleDot, Flag, Search, X } from "lucide-react";
 import { SORT_OPTIONS } from "@/hooks/useTaskQuery";
 import { PRIORITY_LABELS, STATUS_LABELS } from "@/utils/format";
 import { controlClasses } from "./Field";
+import { Select } from "./Select";
 
-const SELECT = `${controlClasses} h-10`;
-
-function FilterSelect({ label, value, onChange, options, allLabel }) {
+function FilterSelect({ label, icon, value, onChange, options, allLabel, active, className = "" }) {
   return (
-    <label className="flex flex-col">
+    <label className={`block ${className}`}>
       <span className="sr-only">{label}</span>
-      <select value={value} onChange={(event) => onChange(event.target.value)} className={SELECT}>
+      <Select icon={icon} active={active} value={value} onChange={(event) => onChange(event.target.value)}>
         {allLabel && <option value="">{allLabel}</option>}
         {Object.entries(options).map(([key, option]) => (
           <option key={key} value={key}>
             {typeof option === "string" ? option : option.label}
           </option>
         ))}
-      </select>
+      </Select>
     </label>
   );
 }
@@ -49,11 +48,34 @@ export function TaskFilters({ searchInput, onSearchChange, query, onFilterChange
           )}
         </label>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:flex">
-          <FilterSelect label="Filter by status" value={query.status} onChange={(v) => onFilterChange("status", v)} options={STATUS_LABELS} allLabel="All statuses" />
-          <FilterSelect label="Filter by priority" value={query.priority} onChange={(v) => onFilterChange("priority", v)} options={PRIORITY_LABELS} allLabel="All priorities" />
-          <div className="col-span-2 sm:col-span-1">
-            <FilterSelect label="Sort tasks" value={query.sort} onChange={(v) => onFilterChange("sort", v)} options={SORT_OPTIONS} />
-          </div>
+          <FilterSelect
+            label="Filter by status"
+            icon={CircleDot}
+            value={query.status}
+            active={Boolean(query.status)}
+            onChange={(v) => onFilterChange("status", v)}
+            options={STATUS_LABELS}
+            allLabel="All statuses"
+            className="lg:w-44"
+          />
+          <FilterSelect
+            label="Filter by priority"
+            icon={Flag}
+            value={query.priority}
+            active={Boolean(query.priority)}
+            onChange={(v) => onFilterChange("priority", v)}
+            options={PRIORITY_LABELS}
+            allLabel="All priorities"
+            className="lg:w-44"
+          />
+          <FilterSelect
+            label="Sort tasks"
+            icon={ArrowUpDown}
+            value={query.sort}
+            onChange={(v) => onFilterChange("sort", v)}
+            options={SORT_OPTIONS}
+            className="col-span-2 sm:col-span-1 lg:w-52"
+          />
         </div>
       </div>
       {hasActiveFilters && (
