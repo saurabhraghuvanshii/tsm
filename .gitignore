@@ -1,5 +1,9 @@
+# AI agent instructions (local only)
 .plan
-CLAUDE.md
+.claude/
+**/CLAUDE.md
+**/CLAUDE.local.md
+**/AGENTS.md
 node_modules
 .env
 .env.*

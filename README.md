@@ -19,6 +19,14 @@ A full-stack task manager: a **Next.js + Tailwind CSS** frontend talking to a **
 - Light/dark theme following the OS by default, persisted, no flash on load
 - Swagger UI, OpenAPI spec and a Postman collection
 
+## Demo
+
+A 47-second walkthrough: search, filter and sort → create with validation → view → edit → dark mode → delete.
+
+[![Taskboard demo](docs/demo/taskboard-demo.gif)](docs/demo/taskboard-demo.mp4)
+
+[Watch the full-quality MP4](docs/demo/taskboard-demo.mp4)
+
 ## Screenshots
 
 | Light | Dark |
@@ -160,8 +168,8 @@ POST /api/tasks
 Content-Type: application/json
 
 {
-  "title": "Finish assignment",
-  "description": "Complete the full-stack task manager",
+  "title": "Complete assignment",
+  "description": "Build the full-stack task manager",
   "status": "pending",
   "priority": "high",
   "dueDate": "2026-10-05"
@@ -173,8 +181,8 @@ Content-Type: application/json
 {
   "data": {
     "id": "3f2b8c1e-6a4d-4e2f-9b7a-1c5d8e9f0a12",
-    "title": "Finish assignment",
-    "description": "Complete the full-stack task manager",
+    "title": "Complete assignment",
+    "description": "Build the full-stack task manager",
     "status": "pending",
     "priority": "high",
     "dueDate": "2026-10-05",

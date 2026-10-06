@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { formatDate } from "@/utils/format";
 import { Badge } from "./Badge";
 import { DueDate, TaskActions } from "./TaskActions";
 
@@ -13,6 +14,7 @@ export function TaskCard({ task, onDelete }) {
         <Badge type="status" value={task.status} />
         <Badge type="priority" value={task.priority} />
       </div>
+      <p className="mt-2 text-xs text-muted">Created {formatDate(task.createdAt)}</p>
       <div className="mt-3 flex items-center justify-between gap-3 border-t border-border pt-2">
         <DueDate task={task} />
         <TaskActions task={task} onDelete={onDelete} />

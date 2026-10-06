@@ -14,9 +14,10 @@ export function TaskRow({ task, onDelete }) {
           {task.title}
         </Link>
         <p className="truncate text-sm text-muted">{task.description}</p>
-        <div className="mt-2 flex flex-wrap gap-1.5 lg:hidden">
+        <div className="mt-2 flex flex-wrap items-center gap-1.5 lg:hidden">
           <Badge type="status" value={task.status} />
           <Badge type="priority" value={task.priority} />
+          <span className="text-xs text-muted">Created {formatDate(task.createdAt)}</span>
         </div>
       </div>
       <div className="hidden lg:block">

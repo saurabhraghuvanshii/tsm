@@ -26,7 +26,7 @@
             "exec": [
               "pm.test(\"Status is 201\", () => pm.response.to.have.status(201));",
               "const task = pm.response.json().data;",
-              "pm.test(\"Returns created task\", () => { pm.expect(task.id).to.be.a(\"string\"); pm.expect(task.title).to.eql(\"Finish assignment\"); });",
+              "pm.test(\"Returns created task\", () => { pm.expect(task.id).to.be.a(\"string\"); pm.expect(task.title).to.eql(\"Complete assignment\"); });",
               "pm.collectionVariables.set(\"taskId\", task.id);"
             ]
           }
@@ -52,7 +52,7 @@
         "description": "",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"title\": \"Finish assignment\",\n  \"description\": \"Complete the full-stack task manager\",\n  \"status\": \"pending\",\n  \"priority\": \"high\",\n  \"dueDate\": \"2026-10-05\"\n}",
+          "raw": "{\n  \"title\": \"Complete assignment\",\n  \"description\": \"Build the full-stack task manager\",\n  \"status\": \"pending\",\n  \"priority\": \"high\",\n  \"dueDate\": \"2026-10-05\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -258,7 +258,7 @@
         "description": "",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"title\": \"Finish assignment\",\n  \"description\": \"Complete the full-stack task manager\",\n  \"status\": \"completed\",\n  \"priority\": \"high\",\n  \"dueDate\": \"2026-10-05\"\n}",
+          "raw": "{\n  \"title\": \"Complete assignment\",\n  \"description\": \"Build the full-stack task manager\",\n  \"status\": \"completed\",\n  \"priority\": \"high\",\n  \"dueDate\": \"2026-10-05\"\n}",
           "options": {
             "raw": {
               "language": "json"
