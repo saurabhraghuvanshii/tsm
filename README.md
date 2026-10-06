@@ -221,27 +221,6 @@ Malformed JSON returns 400 and unknown routes return 404, both in this shape. Un
 - **Swagger UI:** http://localhost:5000/api-docs (served from [`docs/openapi.yaml`](docs/openapi.yaml))
 - **Postman:** import [`docs/task-manager.postman_collection.json`](docs/task-manager.postman_collection.json). It uses a `{{baseUrl}}` variable (default `http://localhost:5000/api`). Running it in order creates, reads, updates and deletes a task, with status-code tests on every request.
 
-## Design notes
-
-- Flat, quiet UI: off-white and dark-ink palettes, 1px borders, very soft shadows, 8px radius, no gradients, no pure white or black.
-- All colors are CSS variables mapped into Tailwind (`bg-surface`, `text-muted`, `bg-accent`, …), so components look right in both themes without `dark:` overrides.
-- Status badges: pending = amber, in progress = indigo, completed = green. Priority: low = grey, medium = amber, high = red.
-- The theme is set by an inline script before first paint (no flash), defaults to the OS preference, and is saved in `localStorage`.
-- Accessible by default: labelled controls, `aria-invalid` field errors, visible focus rings, 40px touch targets, focus-trapped dialogs with Esc to close, live-region toasts, reduced-motion support.
-
-## Tests
-
-Tests live in `/test`, which has its own `package.json` and is **gitignored** (kept locally, not part of the submission).
-
-```bash
-cd test
-npm install
-npx playwright install chromium
-npm test           # API tests (vitest + supertest) — imports the Express app directly, no server needed
-npm run shots      # regenerates docs/screenshots/* (reuses servers on :5000/:3000, or starts them)
-```
-
-The API suite covers create (201/400, malformed JSON), list (defaults, search, filters, sorting, pagination, invalid query), get (200/404), update (200/400/404), delete (200/404), unknown routes and `/health`.
 
 ## Assumptions
 
