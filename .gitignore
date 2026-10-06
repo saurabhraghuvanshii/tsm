@@ -1,0 +1,11 @@
+.plan
+CLAUDE.md
+node_modules
+.env
+.env.*
+!.env.example
+.next
+dist
+/test
+*.log
+.DS_Store
