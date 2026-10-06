@@ -12,7 +12,7 @@ export const PRIORITY_LABELS = {
 
 const pad = (n) => String(n).padStart(2, "0");
 
-export const todayISO = () => {
+const todayISO = () => {
   const now = new Date();
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 };

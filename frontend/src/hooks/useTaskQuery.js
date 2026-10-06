@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useEffectEvent, useMemo, useState } from "react";
+import { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PRIORITY_LABELS, STATUS_LABELS } from "@/utils/format";
 import { useDebounce } from "./useDebounce";
@@ -47,9 +47,15 @@ export function useTaskQuery() {
     if (query.search !== debouncedSearch) setSearchInput(query.search);
   }
 
+  const latestQuery = useRef(query);
+  useEffect(() => {
+    latestQuery.current = query;
+  }, [query]);
+
   const update = useCallback(
     (patch) => {
-      const next = { ...query, page: DEFAULTS.page, ...patch };
+      const next = { ...latestQuery.current, page: DEFAULTS.page, ...patch };
+      latestQuery.current = next;
       const params = new URLSearchParams();
       Object.entries(next).forEach(([key, value]) => {
         if (value !== DEFAULTS[key]) params.set(key, String(value));
@@ -57,11 +63,11 @@ export function useTaskQuery() {
       const qs = params.toString();
       router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
     },
-    [query, pathname, router],
+    [pathname, router],
   );
 
   const syncSearch = useEffectEvent((value) => {
-    if (value !== query.search) update({ search: value });
+    if (value !== latestQuery.current.search) update({ search: value });
   });
 
   useEffect(() => {

@@ -1,0 +1,253 @@
+openapi: 3.0.3
+info:
+  title: Taskboard API
+  version: 1.0.0
+  description: |
+    REST API for a simple task manager. Data is stored in memory and resets when the server restarts.
+    All errors use the shape `{ "error": { "message": string, "details"?: [...] } }`.
+servers:
+  - url: http://localhost:5000/api
+    description: Local development
+security: []
+tags:
+  - name: Tasks
+    description: Create, read, update, delete and query tasks.
+paths:
+  /tasks:
+    get:
+      tags: [Tasks]
+      summary: List tasks
+      description: Search, filter, sort and paginate tasks. Empty query values are ignored.
+      operationId: listTasks
+      parameters:
+        - name: search
+          in: query
+          description: Case-insensitive match on title and description.
+          schema: { type: string }
+          example: report
+        - name: status
+          in: query
+          schema: { $ref: '#/components/schemas/Status' }
+        - name: priority
+          in: query
+          schema: { $ref: '#/components/schemas/Priority' }
+        - name: sortBy
+          in: query
+          description: Priority sorts low < medium < high. Tasks without a due date always sort last.
+          schema: { type: string, enum: [createdAt, priority, dueDate], default: createdAt }
+        - name: order
+          in: query
+          schema: { type: string, enum: [asc, desc], default: desc }
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 1, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 50, default: 10 }
+      responses:
+        '200':
+          description: A page of tasks.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Task' }
+                  meta: { $ref: '#/components/schemas/Meta' }
+              example:
+                data:
+                  - id: 3f2b8c1e-6a4d-4e2f-9b7a-1c5d8e9f0a12
+                    title: Finish assignment
+                    description: Complete the full-stack task manager
+                    status: pending
+                    priority: high
+                    dueDate: '2026-10-05'
+                    createdAt: '2026-10-01T09:30:00.000Z'
+                    updatedAt: '2026-10-01T09:30:00.000Z'
+                meta: { page: 1, limit: 10, total: 1, totalPages: 1 }
+        '400': { $ref: '#/components/responses/ValidationError' }
+    post:
+      tags: [Tasks]
+      summary: Create a task
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TaskInput' }
+            examples:
+              assignment:
+                summary: Sample from the assignment
+                value:
+                  title: Finish assignment
+                  description: Complete the full-stack task manager
+                  status: pending
+                  priority: high
+                  dueDate: '2026-10-05'
+              minimal:
+                summary: Only required fields (status and priority use defaults)
+                value:
+                  title: Buy groceries
+                  description: Milk, eggs, bread
+      responses:
+        '201':
+          description: Task created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TaskResponse' }
+              example:
+                data:
+                  id: 3f2b8c1e-6a4d-4e2f-9b7a-1c5d8e9f0a12
+                  title: Finish assignment
+                  description: Complete the full-stack task manager
+                  status: pending
+                  priority: high
+                  dueDate: '2026-10-05'
+                  createdAt: '2026-10-01T09:30:00.000Z'
+                  updatedAt: '2026-10-01T09:30:00.000Z'
+        '400': { $ref: '#/components/responses/ValidationError' }
+  /tasks/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    get:
+      tags: [Tasks]
+      summary: Get a task by id
+      operationId: getTask
+      responses:
+        '200':
+          description: The task.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TaskResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Tasks]
+      summary: Replace a task
+      description: Full update. `title` and `description` are required; omitted status/priority reset to defaults and omitted dueDate becomes null.
+      operationId: updateTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TaskInput' }
+            example:
+              title: Finish assignment
+              description: Complete the full-stack task manager
+              status: completed
+              priority: high
+              dueDate: '2026-10-05'
+      responses:
+        '200':
+          description: Updated task.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TaskResponse' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Tasks]
+      summary: Delete a task
+      operationId: deleteTask
+      responses:
+        '200':
+          description: Task deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [message]
+                properties:
+                  message: { type: string }
+              example: { message: Task deleted successfully }
+        '404': { $ref: '#/components/responses/NotFound' }
+components:
+  schemas:
+    Status:
+      type: string
+      enum: [pending, in_progress, completed]
+    Priority:
+      type: string
+      enum: [low, medium, high]
+    Task:
+      type: object
+      required: [id, title, description, status, priority, dueDate, createdAt, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string, minLength: 1, maxLength: 120 }
+        description: { type: string, minLength: 1, maxLength: 1000 }
+        status: { $ref: '#/components/schemas/Status' }
+        priority: { $ref: '#/components/schemas/Priority' }
+        dueDate: { type: string, format: date, nullable: true, example: '2026-10-05' }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    TaskInput:
+      type: object
+      required: [title, description]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 120, description: Trimmed before validation. }
+        description: { type: string, minLength: 1, maxLength: 1000, description: Trimmed before validation. }
+        status:
+          allOf: [{ $ref: '#/components/schemas/Status' }]
+          default: pending
+        priority:
+          allOf: [{ $ref: '#/components/schemas/Priority' }]
+          default: medium
+        dueDate:
+          type: string
+          format: date
+          nullable: true
+          description: Calendar date in YYYY-MM-DD format.
+    TaskResponse:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/Task' }
+    Meta:
+      type: object
+      required: [page, limit, total, totalPages]
+      properties:
+        page: { type: integer }
+        limit: { type: integer }
+        total: { type: integer }
+        totalPages: { type: integer }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [message]
+          properties:
+            message: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  message: { type: string }
+  responses:
+    ValidationError:
+      description: Invalid input or malformed JSON.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example:
+            error:
+              message: Validation failed
+              details:
+                - { field: title, message: title is required }
+                - { field: dueDate, message: dueDate must be in YYYY-MM-DD format }
+    NotFound:
+      description: Task not found.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example:
+            error: { message: Task not found }

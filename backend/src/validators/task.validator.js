@@ -4,7 +4,10 @@ const STATUSES = ['pending', 'in_progress', 'completed'];
 const PRIORITIES = ['low', 'medium', 'high'];
 const SORT_FIELDS = ['createdAt', 'priority', 'dueDate'];
 
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
 const isRealDate = (value) => {
+  if (!DATE_PATTERN.test(value)) return true;
   const [y, m, d] = value.split('-').map(Number);
   const date = new Date(Date.UTC(y, m - 1, d));
   return date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d;
@@ -12,7 +15,7 @@ const isRealDate = (value) => {
 
 const dueDate = z
   .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, 'dueDate must be in YYYY-MM-DD format')
+  .regex(DATE_PATTERN, 'dueDate must be in YYYY-MM-DD format')
   .refine(isRealDate, 'dueDate must be a valid calendar date')
   .nullable()
   .optional();
@@ -54,4 +57,4 @@ const listQuerySchema = z.object({
   limit: z.preprocess(emptyToUndefined, z.coerce.number().int().min(1).max(50).default(10)),
 });
 
-module.exports = { createTaskSchema, updateTaskSchema, listQuerySchema, STATUSES, PRIORITIES };
+module.exports = { createTaskSchema, updateTaskSchema, listQuerySchema };
